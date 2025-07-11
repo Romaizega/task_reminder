@@ -83,7 +83,22 @@ const updateTask = async(req, res) =>{
 }
 
 const markTask = async(req, res) => {
-  res.send("markTask")
+  const id = Number(req.params.id)
+  try {
+    const task = await db('tasks')
+    .where({id}).first()
+    if(!task){
+      return res.status(400).json({error: "Task not found"})
+    }
+    const [markTask] = await db('tasks')
+    .where({id})
+    .update({completed: true})
+    .returning('*')
+    return res.status(200).json({message: "Task marked as done", task_completed: markTask})
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({error: "Server error"})
+  }
 }
 
 const deleteTask = async(req, res) => {
