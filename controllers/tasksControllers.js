@@ -63,7 +63,23 @@ const createTask = async(req, res) => {
 }
 
 const updateTask = async(req, res) =>{
-  res.send("updateTask")
+  const id = Number(req.params.id)
+  const {title, description, deadline_date, reminder} = req.body;
+  try {
+    const task = await db('tasks')
+    .where({id}).first()
+  if(!task){
+    return res.status(400).json({error: "Task not found"})
+  }
+  const [updatedTask] = await db('tasks')
+  .where({id})
+  .update({title, description, deadline_date, reminder})
+  .returning(["title", "description", "deadline_date"])
+  res.status(200).json({message: "Task updated successfully", updatedTask})
+  } catch (error) {
+  console.error(error)
+  res.status(500).json({error: "Server error"})
+  }
 }
 
 const markTask = async(req, res) => {
