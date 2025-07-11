@@ -102,7 +102,19 @@ const markTask = async(req, res) => {
 }
 
 const deleteTask = async(req, res) => {
-  res.send("deleteTask")
+  const id = Number(req.params.id);
+  try {
+    const task = await db('tasks')
+    .where({id}).first()
+    if(!task){
+      return res.status(400).json({error: "Task not found"})
+    }
+    await db('tasks').where({ id }).del();
+    return res.status(200).json({ message: "Task deleted successfully", deletedTask: task });
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({error: "Server error"})
+  }
 }
 
 module.exports = {
