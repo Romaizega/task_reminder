@@ -13,7 +13,20 @@ const getAlltasks = async(req, res) => {
 
 
 const getTaskById = async(req, res) =>{
-  res.send("getTaskById")
+  const id = Number(req.params.id)
+  try {
+    const task = await db('tasks')
+    .where({id}).first()
+    if(!task){
+    return  res.status(404).json({error: "Task not found"})
+    }
+    res.status(200).json({
+      message: "Task founded successfully",
+    task})
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({error: "Server error"})
+  }
 }
 
 const createTask = async(req, res) => {
