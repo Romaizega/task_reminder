@@ -1,3 +1,4 @@
+const { message } = require("statuses")
 const db = require("../config/knex")
 
 const getAlltasks = async(req, res) => {
@@ -30,7 +31,35 @@ const getTaskById = async(req, res) =>{
 }
 
 const createTask = async(req, res) => {
-  res.send("createTask")
+  const {
+    title,
+    description,
+    deadline_date,
+    telegram_chat_id,
+    reminder,
+    completed,
+    created_at} = req.body;
+  if(!title || !deadline_date) {
+      return res.status(400).json({error: "Title and deadline_date are required"})
+    }
+  try {
+    const existsTask = await db('tasks').where({title, deadline_date}).first()
+    if(existsTask){
+      return res.status(400).json({error: "Task already exists"})
+    }
+    const [newTask] = await db('tasks')
+    .insert({
+      title,
+      description,
+      deadline_date,
+      telegram_chat_id
+    })
+    .returning('*')
+    res.status(201).json({message: "Tasks created successfully", task: newTask})
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({error: "Server error"})
+  }
 }
 
 const updateTask = async(req, res) =>{
