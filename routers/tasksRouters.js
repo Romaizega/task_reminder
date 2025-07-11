@@ -8,7 +8,7 @@ const {
   updateTask,
   markTask,
   deleteTask
-} = require("../controllers/controllersTasks.js");
+} = require("../controllers/tasksControllers.js");
 
 
 router.get("/", getAlltasks);
