@@ -137,6 +137,25 @@ const filterTask = async(req, res)=>{
   }
 }
 
+const filterTasksToday = async(req, res)=>{
+  const today = new Date().toISOString().split('T')[0];
+  try {
+    const tasks = await db('tasks')
+      .select('title', 'description', 'deadline_date')
+      .where('reminder', true)
+      .andWhere('completed', false)
+      .whereRaw('DATE(deadline_date) = ?', [today])
+      .orderBy('title', 'desc')
+      if(tasks.length === 0) {
+        return res.status(200).json({ message: "No tasks scheduled for today"});
+      }
+      res.status(200).json({ message: "Tasks for today", tasks})
+  } catch (error) {
+    console.error(error, error.message)
+    res.status(500).json({error: "Server error"})
+  }
+}
+
 module.exports = {
   getAlltasks,
   getTaskById,
@@ -144,5 +163,6 @@ module.exports = {
   updateTask,
   markTask,
   deleteTask,
-  filterTask
+  filterTask,
+  filterTasksToday
 }
