@@ -8,11 +8,13 @@ const {
   updateTask,
   markTask,
   deleteTask, 
-  filterTask
+  filterTask,
+  filterTasksToday
 } = require("../controllers/tasksControllers.js");
 
 
 router.get("/filter", filterTask)
+router.get("/filter/today",filterTasksToday)
 router.get("/", getAlltasks);
 router.get("/:id", getTaskById);
 router.post("/", createTask);
