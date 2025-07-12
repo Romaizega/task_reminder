@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
-const db = require('../hackathon_2/config/knex.js')
-const tasks_routers = require("../hackathon_2/routers/tasksRouters.js")
-
+const db = require('./config/knex.js')
+const tasks_routers = require("./routers/tasksRouters.js")
+const bot = require("./telegram/telegram.js")
+const reminderBot = require("./telegram/reminderBot.js")
 
 require('dotenv').config();
 app.use(express.json());
