@@ -5,6 +5,9 @@ const getAlltasks = async(req, res) => {
   try {
     const tasks = await db('tasks')
     .select('*')
+    if(tasks.length === 0){
+    return res.status(400).json({message: "There are no any tasks"})
+    }
     res.status(200).json({message: "You got all tasks", tasks})
   } catch (error) {
     console.error(error)
