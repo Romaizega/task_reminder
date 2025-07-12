@@ -11,7 +11,7 @@ bot.on("message", (msg) => {
 });
 
 bot.on("message", (msg)=>{
-  bot.sendMessage(msg.chat.id, "Hello there!" + msg.chat.id)
+  bot.sendMessage(msg.chat.id, "Hello there!")
 });
 
 module.exports = bot;
