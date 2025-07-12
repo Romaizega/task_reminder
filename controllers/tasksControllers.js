@@ -172,7 +172,24 @@ const filterTasksAfterToday = async(req, res) =>{
   } catch (error) {
     console.error("Error filtering upcoming tasks:", error.message);
     res.status(500).json({ error: "Server error" });
+  }
+}
 
+const filterTasksBeforeToday = async(req, res) =>{
+  const today = new Date().toISOString().split('T')[0]
+  try {
+    const tasks = await db('tasks')
+    .select('title', 'description', 'deadline_date')
+    .andWhere('completed', false)
+    .whereRaw('DATE(deadline_date) < ?', [today])
+    .orderBy('deadline_date', 'asc')
+    if(tasks.length === 0){
+      return res.status(200).json({ message: "No passing tasks" })
+    }
+     res.status(200).json({ message: "Passing tasks", tasks})
+  } catch (error) {
+    console.error("Error filtering passing tasks:", error.message);
+    res.status(500).json({ error: "Server error" });
   }
 }
 
@@ -185,5 +202,6 @@ module.exports = {
   deleteTask,
   filterTask,
   filterTasksToday,
-  filterTasksAfterToday
+  filterTasksAfterToday,
+  filterTasksBeforeToday,
 }
