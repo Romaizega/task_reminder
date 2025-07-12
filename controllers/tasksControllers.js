@@ -156,6 +156,26 @@ const filterTasksToday = async(req, res)=>{
   }
 }
 
+const filterTasksAfterToday = async(req, res) =>{
+  const today = new Date().toISOString().split('T')[0]
+  try {
+    const tasks = await db('tasks')
+    .select('title', 'description', 'deadline_date')
+    .where('reminder', true)
+    .andWhere('completed', false)
+    .whereRaw('DATE(deadline_date) > ?', [today])
+    .orderBy('deadline_date', 'asc')
+    if(tasks.length === 0){
+      return res.status(200).json({ message: "No upcoming tasks." })
+    }
+     res.status(200).json({ message: "Upcoming tasks", tasks })
+  } catch (error) {
+    console.error("Error filtering upcoming tasks:", error.message);
+    res.status(500).json({ error: "Server error" });
+
+  }
+}
+
 module.exports = {
   getAlltasks,
   getTaskById,
@@ -164,5 +184,6 @@ module.exports = {
   markTask,
   deleteTask,
   filterTask,
-  filterTasksToday
+  filterTasksToday,
+  filterTasksAfterToday
 }
