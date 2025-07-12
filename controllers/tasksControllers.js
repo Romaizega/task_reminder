@@ -55,7 +55,8 @@ const createTask = async(req, res) => {
       title,
       description,
       deadline_date,
-      telegram_chat_id
+      telegram_chat_id,
+      reminder
     })
     .returning('*')
     res.status(201).json({message: "Tasks created successfully", task: newTask})
@@ -120,11 +121,28 @@ const deleteTask = async(req, res) => {
   }
 }
 
+const filterTask = async(req, res)=>{
+  try {
+    const filterTasks = await db('tasks')
+    .select('title', 'description', 'deadline_date', 'created_at')
+    .where('completed', false)
+    .orderBy('created_at', 'desc')
+    if(filterTasks.length === 0){
+      return res.status(400).json({message: "All task marked as completed"})
+    }
+    res.status(200).json({message: "Your uncompleted tasks", filterTasks})
+  } catch (error) {
+    console.error(error, error.message)
+    res.status(500).json({error: "Server error"})
+  }
+}
+
 module.exports = {
   getAlltasks,
   getTaskById,
   createTask,
   updateTask,
   markTask,
-  deleteTask
+  deleteTask,
+  filterTask
 }
