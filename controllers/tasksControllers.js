@@ -1,4 +1,3 @@
-const { message } = require("statuses")
 const db = require("../config/knex")
 
 const getAlltasks = async(req, res) => {
@@ -142,8 +141,7 @@ const filterTasksToday = async(req, res)=>{
   try {
     const tasks = await db('tasks')
       .select('title', 'description', 'deadline_date')
-      .where('reminder', true)
-      .andWhere('completed', false)
+      .where('completed', false)
       .whereRaw('DATE(deadline_date) = ?', [today])
       .orderBy('title', 'desc')
       if(tasks.length === 0) {
@@ -161,8 +159,7 @@ const filterTasksAfterToday = async(req, res) =>{
   try {
     const tasks = await db('tasks')
     .select('title', 'description', 'deadline_date')
-    .where('reminder', true)
-    .andWhere('completed', false)
+    .where('completed', false)
     .whereRaw('DATE(deadline_date) > ?', [today])
     .orderBy('deadline_date', 'asc')
     if(tasks.length === 0){
