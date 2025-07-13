@@ -191,3 +191,23 @@ document.getElementById("tasksBefore").addEventListener("click", () => {
    setActiveTab("tasksBefore")
 });
 
+async function loadChatIds() {
+  try {
+    const res = await fetch("/chat-ids");
+    const data = await res.json();
+
+    const select = document.getElementById("telegramChatIdInput");
+    select.innerHTML = `<option value="">-------------</option>`;
+
+    data.forEach(person => {
+      const option = document.createElement("option");
+      option.value = person.id;
+      option.textContent = person.name;
+      select.appendChild(option);
+    });
+  } catch (err) {
+    console.error("Failed to load Telegram chat IDs", err);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", loadChatIds);
