@@ -115,6 +115,17 @@ function renderTasks(tasks) {
   });
 }
 
+const activeBtn = document.querySelectorAll(".nav-link");
+
+function setActiveTab(clickedId) {
+  activeBtn.forEach(btn => {
+    if (btn.id === clickedId) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
+  });
+}
 
 async function loadTasks() {
   const res = await fetch("/tasks");
@@ -154,12 +165,29 @@ async function loadExpiredTasks() {
   renderTasks(data.tasks);
 }
 
-
-
-document.getElementById("allTasks").addEventListener("click", loadTasks);
-document.getElementById("tasksUncompl").addEventListener("click", loadUncompletedTasks);
-document.getElementById("taskCompleted").addEventListener("click", loadCompletedTasks);
-document.getElementById("tasksToday").addEventListener("click", loadTasksToday);
-document.getElementById("tasksTommorow").addEventListener("click", loadTasksTomorrow);
-document.getElementById("tasksBefore").addEventListener("click", loadExpiredTasks);
+document.getElementById("allTasks").addEventListener("click", () => {
+   loadTasks();
+   setActiveTab("allTasks")
+});
+document.getElementById("tasksUncompl").addEventListener("click", () => {
+  loadUncompletedTasks();
+  setActiveTab("tasksUncompl")
+});
+document.getElementById("taskCompleted").addEventListener("click", () => {
+  loadCompletedTasks();
+  setActiveTab("taskCompleted")
+});
+document.getElementById("tasksToday").addEventListener("click", () => {
+  loadTasksToday();
+  setActiveTab("tasksToday")
+}) 
+  
+document.getElementById("tasksTommorow").addEventListener("click", () => {
+  loadTasksTomorrow();
+  setActiveTab("tasksTommorow")
+});
+document.getElementById("tasksBefore").addEventListener("click", () => {
+   loadExpiredTasks();
+   setActiveTab("tasksBefore")
+});
 
