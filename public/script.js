@@ -45,130 +45,121 @@ formTask.addEventListener("submit", async (e) => {
   }
 });
 
-async function loadTasks() {
-  try {
-    const response = await fetch("/tasks", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+function renderTasks(tasks) {
+  const taskList = document.querySelector(".task-list");
+  taskList.innerHTML = "";
 
-    const data = await response.json();
-    const tasks = data.tasks;
-
-    if (!Array.isArray(tasks) || tasks.length === 0) {
-      console.log("There are no any tasks");
-      document.querySelector(".task-list").innerHTML = "<p class='text-muted'>No tasks available.</p>";
-      return;
-    }
-
-    const taskList = document.querySelector(".task-list");
-    taskList.innerHTML = "";
-
-    tasks.forEach(task => {      
-      const taskItem = document.createElement("div");
-      taskItem.classList.add("task-item");
-      taskItem.innerHTML = `
-        <div class="p-3 mb-2 bg-dark text-white rounded shadow d-flex justify-content-between align-items-center">
-          <div>
-            <h5>${task.title}</h5>
-            <p>${task.description || ''}</p>
-            <small>${new Date(task.deadline_date).toLocaleString()}</small>
-          </div>
-          <div class="d-flex gap-2">
-            <button class="btn btn-sm btn-success mark-btn" data-id="${task.id}" title="Mark as done">
-              <i class="bi bi-check2-circle"></i>
-            </button>
-            <button class="btn btn-sm btn-warning edit-btn" data-id="${task.id}" title="Edit task">
-              <i class="bi bi-pencil-square"></i>
-            </button>
-            <button class="btn btn-sm btn-danger delete-btn" data-id="${task.id}" title="Delete task">
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-        </div>
-      `;
-      taskList.appendChild(taskItem);
-
-      const deleteBtn = taskItem.querySelector(".delete-btn");
-      deleteBtn.addEventListener("click", async() => {
-        const id = deleteBtn.dataset.id;
-        try {
-          const response = await fetch(`/tasks/${id}`, {
-            method: "DELETE",
-          });
-
-          if (response.ok) {
-            console.log("Task deleted:", id);
-            await loadTasks();
-          } else {
-            console.error("Failed to delete task");
-          }
-        } catch (error) {
-          console.error("Error deleting task", error);
-        }
-         
-      });
-
-      const editBtn = taskItem.querySelector(".edit-btn");
-      editBtn.addEventListener("click", async() => {
-        const id = editBtn.dataset.id;
-        const newTitle = prompt("Write a new title", task.title);
-        const newDesc = prompt("Write a new description", task.description);
-        const newDeadline = prompt("Write a new date (YYYY-MM-DD HH:mm)", 
-          new Date(task.deadline_date).toISOString().slice(0, 16).replace("T", " "));
-        if(!newTitle || !newDeadline) {
-          alert("Title and description are required")
-          return
-        }
-        try {
-          const response = await fetch(`/tasks/${id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              title: newTitle,
-              description: newDesc,
-              deadline_date: new Date(newDeadline).toISOString()
-            })
-          });
-          if(response.ok) {
-            console.log("Task edited", id);
-            await loadTasks()
-          } else {
-            console.error("Failed to update task")
-          }
-        } catch (error) {
-          console.error("Error deleting task", error);
-        }
-      })
-
-      const markBtn = taskItem.querySelector(".mark-btn")
-      markBtn.addEventListener("click", async()=>{
-        const id = markBtn.dataset.id
-                try {
-          const response = await fetch(`/tasks/${id}/mark`, {
-            method: "PATCH",
-          });
-
-          if (response.ok) {
-            console.log("Task mark as completed:", id);
-            await loadTasks();
-          } else {
-            console.error("Failed to mark task");
-          }
-        } catch (error) {
-          console.error("Error marking task", error);
-        }
-
-      })
-    });
-
-  } catch (error) {
-    console.error("Show tasks error:", error.message);
+  if (!Array.isArray(tasks) || tasks.length === 0) {
+    taskList.innerHTML = "<p class='text-muted'>No tasks available.</p>";
+    return;
   }
+
+  tasks.forEach(task => {
+    const taskItem = document.createElement("div");
+    taskItem.classList.add("task-item");
+    taskItem.innerHTML = `
+      <div class="p-3 mb-2 bg-dark text-white rounded shadow d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="${task.completed ? 'text-decoration-line-through opacity-50' : ''}">${task.title}</h5>
+          <p>${task.description || ''}</p>
+          <small>${new Date(task.deadline_date).toLocaleString()}</small>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-success mark-btn" data-id="${task.id}" title="Mark as done">
+            <i class="bi bi-check2-circle"></i>
+          </button>
+          <button class="btn btn-sm btn-warning edit-btn" data-id="${task.id}" title="Edit task">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+          <button class="btn btn-sm btn-danger delete-btn" data-id="${task.id}" title="Delete task">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    `;
+    taskList.appendChild(taskItem);
+
+    const deleteBtn = taskItem.querySelector(".delete-btn");
+    const editBtn = taskItem.querySelector(".edit-btn");
+    const markBtn = taskItem.querySelector(".mark-btn");
+
+    deleteBtn.addEventListener("click", async () => {
+      const id = deleteBtn.dataset.id;
+      await fetch(`/tasks/${id}`, { method: "DELETE" });
+      await loadTasks();
+    });
+
+    editBtn.addEventListener("click", async () => {
+      const id = editBtn.dataset.id;
+      const newTitle = prompt("Write a new title", task.title);
+      const newDesc = prompt("Write a new description", task.description);
+      const newDeadline = prompt("Write a new date", new Date(task.deadline_date).toISOString().slice(0, 16));
+      if (!newTitle || !newDeadline) return;
+      await fetch(`/tasks/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: newTitle,
+          description: newDesc,
+          deadline_date: new Date(newDeadline).toISOString()
+        })
+      });
+      await loadTasks();
+    });
+
+    markBtn.addEventListener("click", async () => {
+      const id = markBtn.dataset.id;
+      await fetch(`/tasks/${id}/mark`, { method: "PATCH" });
+      taskItem.remove();
+    });
+  });
 }
 
-window.addEventListener("DOMContentLoaded", loadTasks);
+
+async function loadTasks() {
+  const res = await fetch("/tasks");
+  const data = await res.json();
+  renderTasks(data.tasks);
+}
+
+async function loadUncompletedTasks() {
+  const res = await fetch("/tasks");
+  const data = await res.json();
+  const uncompleted = data.tasks.filter(task => !task.completed);
+  renderTasks(uncompleted);
+}
+
+async function loadCompletedTasks() {
+  const res = await fetch("/tasks");
+  const data = await res.json();
+  const completed = data.tasks.filter(task => task.completed);
+  renderTasks(completed);
+}
+
+async function loadTasksToday() {
+  const res = await fetch("/tasks/filter/today");
+  const data = await res.json();
+  renderTasks(data.tasks);
+}
+
+async function loadTasksTomorrow() {
+  const res = await fetch("/tasks/filter/after");
+  const data = await res.json();
+  renderTasks(data.tasks);
+}
+
+async function loadExpiredTasks() {
+  const res = await fetch("/tasks/filter/before");
+  const data = await res.json();
+  renderTasks(data.tasks);
+}
+
+
+
+document.getElementById("allTasks").addEventListener("click", loadTasks);
+document.getElementById("tasksUncompl").addEventListener("click", loadUncompletedTasks);
+document.getElementById("taskCompleted").addEventListener("click", loadCompletedTasks);
+document.getElementById("tasksToday").addEventListener("click", loadTasksToday);
+document.getElementById("tasksTommorow").addEventListener("click", loadTasksTomorrow);
+document.getElementById("tasksBefore").addEventListener("click", loadExpiredTasks);
+
