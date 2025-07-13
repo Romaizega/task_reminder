@@ -36,7 +36,7 @@ body {
 
 /* Calendar Icon */
 .calendar-icon {
-  background-color: #1f1f1f;
+  background-color: #7e7979;
   color: #ffffff;
   border: 1px solid #555;
 }
@@ -78,4 +78,22 @@ body {
   border-radius: 10px;
   padding: 20px;
   min-height: 300px;
+}
+
+.form-select {
+  background-color: #3a3f47;
+  color: #ffffff;
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 8px 12px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.form-select:focus{
+  background-color: #ffffff;
+  color: #000000;
+  outline: none;
+  border-color: #ffffff;
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
 }
