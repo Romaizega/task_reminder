@@ -1,7 +1,7 @@
 const inputTitle = document.getElementById("taskTitle");
 const inputDescription = document.getElementById("taskDescription");
 const inputDeadline = document.getElementById("taskDeadline");
-const inputChatId = document.getElementById("telegramChatId");
+const inputChatId = document.getElementById("telegramChatIdInput");
 const inputReminder = document.getElementById("setReminder");
 const btnAdd = document.getElementById("button_add")
 const formTask = document.querySelector(".task-form");
@@ -50,7 +50,7 @@ function renderTasks(tasks) {
   taskList.innerHTML = "";
 
   if (!Array.isArray(tasks) || tasks.length === 0) {
-    taskList.innerHTML = "<p class='text-muted'>No tasks available.</p>";
+    taskList.innerHTML = "<p class='text-white opacity-75'>No tasks available</p>";
     return;
   }
 
@@ -193,7 +193,7 @@ document.getElementById("tasksBefore").addEventListener("click", () => {
 
 async function loadChatIds() {
   try {
-    const res = await fetch("/chat-ids");
+    const res = await fetch("/api/ids/chat-ids");
     const data = await res.json();
 
     const select = document.getElementById("telegramChatIdInput");
