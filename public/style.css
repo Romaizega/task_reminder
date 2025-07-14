@@ -1,0 +1,99 @@
+body {
+  background-color: #444c56;
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Card for the form */
+.task-card {
+  background-color: #2f3133;
+  border-radius: 10px;
+  border: none;
+}
+
+/* Inputs & Textareas */
+.input-field {
+  background-color: #3a3f47;
+  color: #ffffff;
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 8px 12px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.input-field:focus {
+  background-color: #ffffff;
+  color: #000000;
+  outline: none;
+  border-color: #ffffff;
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+.input-field::placeholder {
+  color: #bbbbbb;
+}
+
+/* Calendar Icon */
+.calendar-icon {
+  background-color: #7e7979;
+  color: #ffffff;
+  border: 1px solid #555;
+}
+
+/* Submit Button */
+.submit-btn {
+  background-color: #c1c1c1;
+  color: #ffffff;
+  font-weight: 500;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #ffffff;
+  color: #88909d;
+  border: 1px solid #100f0f;
+}
+
+/* Tabs */
+.nav-tabs .nav-link {
+  background-color: #2f3133;
+  color: #ccc;
+  border: none;
+  margin-right: 5px;
+  border-radius: 5px 5px 0 0;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Task list placeholder */
+.task-list {
+  background-color: #2f3133;
+  border-radius: 10px;
+  padding: 20px;
+  min-height: 300px;
+}
+
+.form-select {
+  background-color: #3a3f47;
+  color: #ffffff;
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 8px 12px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.form-select:focus{
+  background-color: #ffffff;
+  color: #000000;
+  outline: none;
+  border-color: #ffffff;
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
