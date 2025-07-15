@@ -9,6 +9,7 @@ router.get("/chat-ids", (req, res) => {
     { name: "Tatiana", id: process.env.TG_ID_TATIANA },
     { name: "Lev", id: process.env.TG_ID_LEV },
     { name: "Leonid", id: process.env.TG_ID_LEONID },
+    { name: "Iliya", id: process.env.TG_ID_ILIYA },
 
   ];
   res.json(chatIds);
